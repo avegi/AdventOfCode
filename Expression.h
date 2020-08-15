@@ -1,9 +1,8 @@
-#ifndef ADVENTOFCODE_EXPRESSION_H
-#define ADVENTOFCODE_EXPRESSION_H
-#endif //ADVENTOFCODE_EXPRESSION_H
+#pragma once
 
 #include "vector"
 #include "memory"
+#include "Context.h"
 
 using namespace std;
 
@@ -12,17 +11,17 @@ using namespace std;
  */
 class Expression {
 public:
-    Expression(std::vector<int> &input, int pos);
+    Expression(Context &input);
     virtual ~Expression();
 
 protected:
     int m_pos;
-    std::vector<int> &m_input;
+    Context &m_input;
 };
 
 class BinaryExpression : protected Expression{
 public:
-    BinaryExpression(std::vector<int> &input, int pos);
+    BinaryExpression(Context &input);
     virtual int Calculate() = 0;
 
 protected:
@@ -36,7 +35,7 @@ protected:
  */
 class AddExpression : BinaryExpression{
 public:
-    AddExpression(std::vector<int> &input, int pos);
+    AddExpression(Context &input);
     int Calculate() override;
 };
 
@@ -45,9 +44,7 @@ public:
  */
 class MultiplyExpression : BinaryExpression{
 public:
-    MultiplyExpression(std::vector<int> &input, int pos);
+    MultiplyExpression(Context &input);
     int Calculate() override;
 
 };
-
-

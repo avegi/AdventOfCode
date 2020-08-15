@@ -1,39 +1,45 @@
-
-#ifndef ADVENTOFCODE_CONTEXT_H
-#define ADVENTOFCODE_CONTEXT_H
-
-#endif //ADVENTOFCODE_CONTEXT_H
+#pragma once
 
 #include "vector"
 
 class Context {
 public:
-    Context(std::vector<int> &opCode, int actualPos)
+    Context(std::vector<int> tape, int actualPos)
     : m_pos(actualPos)
-    , m_opCode(opCode)
+    , m_tape(std::move(tape))
     {}
 
-    void SetPos(int newPos)
+    void setPos(int newPos)
     {
         m_pos = newPos;
     }
 
-    int GetPos()
+    int getPos()
+    {
+        return m_pos;
+    }
+
+    int getPos() const
     {
         return m_pos;
     }
 
     int getValue(int pos)
     {
-        return m_opCode[pos];
+        return m_tape[pos];
+    }
+
+    int getValue(int pos) const
+    {
+        return m_tape[pos];
     }
 
     void setValue(int value, int pos)
     {
-        m_opCode[pos] = value;
+        m_tape[pos] = value;
     }
 
 private:
     int m_pos;
-    std::vector<int> m_opCode;
+    std::vector<int> m_tape;
 };
