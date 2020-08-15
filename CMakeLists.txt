@@ -4,4 +4,3 @@ project(AdventOfCode)
 set(CMAKE_CXX_STANDARD 17)
 
 add_executable(AdventOfCode main.cpp Expression.cpp Context.h Parser.h)
-add_subdirectory(Google_tests)
