@@ -11,7 +11,10 @@ using namespace std;
  */
 class Expression {
 public:
-    Expression(Context &input);
+    explicit Expression(Context &input);
+    virtual int Calculate();
+    virtual void writeData(int inValue);
+    virtual int readData();
     virtual ~Expression();
 
 protected:
@@ -19,10 +22,9 @@ protected:
     Context &m_input;
 };
 
-class BinaryExpression : protected Expression{
+class BinaryExpression : public Expression{
 public:
     BinaryExpression(Context &input);
-    virtual int Calculate() = 0;
 
 protected:
     int m_lhsPos;
@@ -33,7 +35,7 @@ protected:
 /**
  *
  */
-class AddExpression : BinaryExpression{
+class AddExpression : public BinaryExpression{
 public:
     AddExpression(Context &input);
     int Calculate() override;
@@ -42,9 +44,26 @@ public:
 /**
  *
  */
-class MultiplyExpression : BinaryExpression{
+class MultiplyExpression : public BinaryExpression{
 public:
     MultiplyExpression(Context &input);
     int Calculate() override;
 
+};
+
+class UnaryExpression : public Expression{
+public:
+    UnaryExpression(Context &input);
+};
+
+class InputExpression : public UnaryExpression{
+public:
+    InputExpression(Context &input);
+    void writeData(int inValue);
+};
+
+class OutputExpression : public UnaryExpression{
+public:
+    OutputExpression(Context &input);
+    int readData();
 };

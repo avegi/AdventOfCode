@@ -14,7 +14,6 @@ int main() {
     }
 
     {
-
         for (int noun = 0; noun < 100; noun++)
             for (int verb = 0; verb < 100; verb++)
             {
@@ -27,6 +26,15 @@ int main() {
                     std::cout << 100 * noun + verb;
                 }
             }
+    }
+
+    // Day 5
+
+    {
+        std::vector<int> inputCode_day5 = {4,0,99};
+        Parser parser = Parser(inputCode_day5);
+        std::optional<int> a = parser.parse();
+
     }
 
     return 0;

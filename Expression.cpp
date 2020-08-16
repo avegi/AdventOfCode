@@ -9,6 +9,18 @@ Expression::Expression(Context &input)
 
 Expression::~Expression() noexcept {}
 
+int Expression::Calculate() {
+    return 0;
+}
+
+void Expression::writeData(int inValue) {
+
+}
+
+int Expression::readData() {
+    return 0;
+}
+
 BinaryExpression::BinaryExpression(Context &input)
     : Expression(input)
     {
@@ -26,6 +38,7 @@ int AddExpression::Calculate() {
     int lhs = m_input.getValue(m_lhsPos);
     int rhs = m_input.getValue(m_rhsPos);
     m_input.setValue(lhs + rhs, m_outPos);
+    m_input.setPos(m_pos + 4);
 }
 
 MultiplyExpression::MultiplyExpression(Context &input)
@@ -37,4 +50,29 @@ int MultiplyExpression::Calculate() {
     int lhs = m_input.getValue(m_lhsPos);
     int rhs = m_input.getValue(m_rhsPos);
     m_input.setValue(lhs * rhs, m_outPos);
+    m_input.setPos(m_pos + 4);
+}
+
+UnaryExpression::UnaryExpression(Context &input)
+    : Expression(input)
+    {}
+
+InputExpression::InputExpression(Context &input)
+    : UnaryExpression(input)
+    {}
+
+void InputExpression::writeData(int inValue) {
+    int inPos = m_input.getValue(m_pos + 1);
+    m_input.setValue(inValue, inPos);
+    m_input.setPos(m_pos + 2);
+}
+
+OutputExpression::OutputExpression(Context &input)
+    : UnaryExpression(input)
+    {}
+
+int OutputExpression::readData() {
+    int outPos = m_input.getValue(m_pos + 1);
+    m_input.setPos(m_pos + 2);
+    return m_input.getValue(outPos);
 }
