@@ -12,7 +12,7 @@ public:
         : m_context(Context(opCode, 0))
     {}
 
-    std::optional<int> parse()
+    std::optional<int> parse( int input = std::numeric_limits<int>::max())
     {
         int pos = 0;
 
@@ -20,7 +20,6 @@ public:
         auto a = getMask(test);
 
         std::optional<int> retval;
-        int buffer = std::numeric_limits<int>::max();
         while (m_context.getValue(pos) != 99) {
             pos = m_context.getPos();
             int intCommand = m_context.getValue(pos);
@@ -41,16 +40,17 @@ public:
             else if (commandString == "3" || commandString == "03")
             {
                 uptr_exp = make_unique<InputExpression>(m_context, maskedCommand.modes);
-                uptr_exp->writeData(buffer);
+                uptr_exp->writeData(input);
             }
             else if (commandString == "4" || commandString == "04"){
                 uptr_exp = make_unique<OutputExpression>(m_context, maskedCommand.modes);
-                buffer = uptr_exp->readData();
+                input = uptr_exp->readData();
+                std::cout << input << endl;
             }
 
         }
-        if (buffer != std::numeric_limits<int>::max())
-            retval = buffer;
+        if (input != std::numeric_limits<int>::max())
+            retval = input;
         return retval;
     }
 
