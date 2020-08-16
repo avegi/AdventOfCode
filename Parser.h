@@ -3,29 +3,42 @@
 #include "vector"
 #include "Context.h"
 #include "Expression.h"
+# include "optional"
+
 class Parser{
 public:
-    Parser() = default;
+    Parser(std::vector<int> opCode)
+        : m_context(Context(opCode, 0))
+    {}
 
-    int parse(std::vector<int> opCode, int retPos)
+
+    std::optional<int> parse()
     {
-        Context context = Context(opCode, 0);
-
         int pos = 0;
-        while (context.getValue(pos) != 99) {
-            pos = context.getPos();
-            int command = context.getValue(pos);
+        std::optional<int> retval;
+        while (m_context.getValue(pos) != 99) {
+            pos = m_context.getPos();
+            int command = m_context.getValue(pos);
             if (command == 1) {
-                auto ptr_exp = make_shared<AddExpression>(context);
+                auto ptr_exp = make_shared<AddExpression>(m_context);
                 ptr_exp->Calculate();
-                context.setPos(pos + 4);
+                m_context.setPos(pos + 4);
             } else if (command == 2) {
-                auto ptr_exp = make_shared<MultiplyExpression>(context);
+                auto ptr_exp = make_shared<MultiplyExpression>(m_context);
                 ptr_exp->Calculate();
-                context.setPos(pos + 4);
+                m_context.setPos(pos + 4);
             }
         }
 
-        return context.getValue(retPos);
+        //return m_context.getValue(retPos);
+        return retval;
     }
+
+    int getValue(int pos)
+    {
+        return m_context.getValue(pos);
+    }
+
+private:
+    Context m_context;
 };

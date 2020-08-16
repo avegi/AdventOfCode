@@ -8,18 +8,21 @@ int main() {
 
     // Part 1
     {
-        Parser parser = Parser();
-        std::cout << parser.parse(inputCode, 0) << endl;
+        Parser parser = Parser(inputCode);
+        parser.parse();
+        std::cout << parser.getValue(0) << endl;
     }
 
     {
-        Parser parser = Parser();
+
         for (int noun = 0; noun < 100; noun++)
             for (int verb = 0; verb < 100; verb++)
             {
                 inputCode[1] = noun;
                 inputCode[2] = verb;
-                if (parser.parse(inputCode, 0) == 19690720)
+                Parser parser = Parser(inputCode);
+                parser.parse();
+                if (parser.getValue(0) == 19690720)
                 {
                     std::cout << 100 * noun + verb;
                 }
