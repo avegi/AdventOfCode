@@ -16,7 +16,7 @@ public:
     {
         int pos = 0;
 
-        int test = 10101;
+        int test = 1101;
         auto a = getMask(test);
 
         std::optional<int> retval;
@@ -25,25 +25,26 @@ public:
             pos = m_context.getPos();
             int intCommand = m_context.getValue(pos);
             auto maskedCommand = getMask(intCommand);
+            string commandString = maskedCommand.command;
             unique_ptr<Expression> uptr_exp;
-            string commandString = maskedCommand.front();
+
             if (commandString == "1" || commandString == "01")
             {
-                uptr_exp = make_unique<AddExpression>(m_context);
+                uptr_exp = make_unique<AddExpression>(m_context, maskedCommand.modes);
                 uptr_exp->Calculate();
             }
             else if (commandString == "2" || commandString == "02")
             {
-                uptr_exp = make_unique<MultiplyExpression>(m_context);
+                uptr_exp = make_unique<MultiplyExpression>(m_context, maskedCommand.modes);
                 uptr_exp->Calculate();
             }
             else if (commandString == "3" || commandString == "03")
             {
-                uptr_exp = make_unique<InputExpression>(m_context);
+                uptr_exp = make_unique<InputExpression>(m_context, maskedCommand.modes);
                 uptr_exp->writeData(buffer);
             }
             else if (commandString == "4" || commandString == "04"){
-                uptr_exp = make_unique<OutputExpression>(m_context);
+                uptr_exp = make_unique<OutputExpression>(m_context, maskedCommand.modes);
                 buffer = uptr_exp->readData();
             }
 
@@ -59,9 +60,10 @@ public:
     }
 
 private:
-    std::vector<string> getMask(int mode)
+    CommandMode getMask(int mode)
     {
-        std::vector<string> mask;
+
+        CommandMode mask = CommandMode();
         std::stringstream ss;
         ss << mode;
         std::string strDigits = ss.str();
@@ -69,15 +71,16 @@ private:
         // '01101'
         if (strSize <= 2)
         {
-            mask.push_back(to_string(mode));
+            mask.command = to_string(mode);
         }
         else
         {
             string code = strDigits.substr(strSize-2, strSize-1);
-            mask.push_back(code);
-            for (int i = strSize-3; i>=0; i--)
+            mask.command = code;
+
+            for (int i = strSize-3, j=0; i>=0; i--, j++)
             {
-                mask.push_back(string() + strDigits[i]);
+                mask.modes[j] = string() + strDigits[i];
             }
         }
 

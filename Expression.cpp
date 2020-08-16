@@ -21,16 +21,16 @@ int Expression::readData() {
     return 0;
 }
 
-BinaryExpression::BinaryExpression(Context &input)
+BinaryExpression::BinaryExpression(Context &input, std::vector<string> mask)
     : Expression(input)
     {
-    m_lhsPos = input.getValue(m_pos+1);
-    m_rhsPos = input.getValue(m_pos+2);
-    m_outPos = input.getValue(m_pos+3);
+        m_lhsPos = getMaskedPos(0, mask);
+        m_rhsPos = getMaskedPos(1, mask);
+        m_outPos = getMaskedPos(2, mask);
     }
 
-AddExpression::AddExpression(Context &input)
-    : BinaryExpression(input)
+AddExpression::AddExpression(Context &input, std::vector<string> mask)
+    : BinaryExpression(input, mask)
     {}
 
 
@@ -41,8 +41,8 @@ int AddExpression::Calculate() {
     m_input.setPos(m_pos + 4);
 }
 
-MultiplyExpression::MultiplyExpression(Context &input)
-    : BinaryExpression(input)
+MultiplyExpression::MultiplyExpression(Context &input, std::vector<string> mask)
+    : BinaryExpression(input, mask)
     {}
 
 
@@ -53,26 +53,34 @@ int MultiplyExpression::Calculate() {
     m_input.setPos(m_pos + 4);
 }
 
-UnaryExpression::UnaryExpression(Context &input)
+UnaryExpression::UnaryExpression(Context &input, std::vector<string> mask)
     : Expression(input)
-    {}
+    {
+        m_expressionPos = getMaskedPos(0, mask);
+    }
 
-InputExpression::InputExpression(Context &input)
-    : UnaryExpression(input)
+InputExpression::InputExpression(Context &input, std::vector<string> mask)
+    : UnaryExpression(input, mask)
     {}
 
 void InputExpression::writeData(int inValue) {
-    int inPos = m_input.getValue(m_pos + 1);
-    m_input.setValue(inValue, inPos);
+    m_input.setValue(inValue, m_expressionPos);
     m_input.setPos(m_pos + 2);
 }
 
-OutputExpression::OutputExpression(Context &input)
-    : UnaryExpression(input)
+OutputExpression::OutputExpression(Context &input, std::vector<string> mask)
+    : UnaryExpression(input, mask)
     {}
 
 int OutputExpression::readData() {
-    int outPos = m_input.getValue(m_pos + 1);
     m_input.setPos(m_pos + 2);
-    return m_input.getValue(outPos);
+    return m_input.getValue(m_expressionPos);
+}
+
+int Expression::getMaskedPos(int relativePos, std::vector<string> mask)
+{
+    if (mask.at(relativePos) == "0")
+        return m_input.getValue(m_pos + (relativePos + 1));
+    else
+        return m_pos + (relativePos + 1);
 }

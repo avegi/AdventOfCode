@@ -43,3 +43,12 @@ private:
     int m_pos;
     std::vector<int> m_tape;
 };
+
+struct CommandMode
+{
+    CommandMode()
+        : modes(std::vector<std::string> {"0", "0", "0"})
+        {}
+    std::string command;
+    std::vector<std::string> modes;
+};

@@ -18,13 +18,15 @@ public:
     virtual ~Expression();
 
 protected:
+    int getMaskedPos(int relativPos, std::vector<string> mask);
+protected:
     int m_pos;
     Context &m_input;
 };
 
 class BinaryExpression : public Expression{
 public:
-    BinaryExpression(Context &input);
+    BinaryExpression(Context &input, std::vector<string> mask);
 
 protected:
     int m_lhsPos;
@@ -37,7 +39,7 @@ protected:
  */
 class AddExpression : public BinaryExpression{
 public:
-    AddExpression(Context &input);
+    AddExpression(Context &input, std::vector<string> mask);
     int Calculate() override;
 };
 
@@ -46,24 +48,26 @@ public:
  */
 class MultiplyExpression : public BinaryExpression{
 public:
-    MultiplyExpression(Context &input);
+    MultiplyExpression(Context &input, std::vector<string> mask);
     int Calculate() override;
 
 };
 
 class UnaryExpression : public Expression{
 public:
-    UnaryExpression(Context &input);
+    UnaryExpression(Context &input, std::vector<string> mask);
+protected:
+    int m_expressionPos;
 };
 
 class InputExpression : public UnaryExpression{
 public:
-    InputExpression(Context &input);
+    InputExpression(Context &input, std::vector<string> mask);
     void writeData(int inValue);
 };
 
 class OutputExpression : public UnaryExpression{
 public:
-    OutputExpression(Context &input);
+    OutputExpression(Context &input, std::vector<string> mask);
     int readData();
 };

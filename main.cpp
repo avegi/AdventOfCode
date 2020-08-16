@@ -23,7 +23,7 @@ int main() {
                 parser.parse();
                 if (parser.getValue(0) == 19690720)
                 {
-                    std::cout << 100 * noun + verb;
+                    std::cout << 100 * noun + verb << endl;
                 }
             }
     }
@@ -31,10 +31,10 @@ int main() {
     // Day 5
 
     {
-        std::vector<int> inputCode_day5 = {4,0,99};
+        std::vector<int> inputCode_day5 = {1102,100,-1,0,99};
         Parser parser = Parser(inputCode_day5);
         std::optional<int> a = parser.parse();
-
+        std::cout << parser.getValue(0) << endl;
     }
 
     return 0;
