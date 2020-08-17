@@ -72,6 +72,12 @@ public:
                 uptr_exp->process();
             }
 
+            else
+            {
+                std::cout << "invalid value received: " << commandString << endl;
+                break;
+            }
+
         }
         if (input != std::numeric_limits<int>::max())
             retval = input;
