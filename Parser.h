@@ -30,12 +30,12 @@ public:
             if (commandString == "1" || commandString == "01")
             {
                 uptr_exp = make_unique<AddExpression>(m_context, maskedCommand.modes);
-                uptr_exp->Calculate();
+                uptr_exp->process();
             }
             else if (commandString == "2" || commandString == "02")
             {
                 uptr_exp = make_unique<MultiplyExpression>(m_context, maskedCommand.modes);
-                uptr_exp->Calculate();
+                uptr_exp->process();
             }
             else if (commandString == "3" || commandString == "03")
             {
@@ -46,6 +46,22 @@ public:
                 uptr_exp = make_unique<OutputExpression>(m_context, maskedCommand.modes);
                 input = uptr_exp->readData();
                 std::cout << input << endl;
+            }
+            else if (commandString == "5" || commandString == "05"){
+                uptr_exp = make_unique<JumpIfTrueExpression>(m_context, maskedCommand.modes);
+                uptr_exp->process();
+            }
+            else if (commandString == "6" || commandString == "06"){
+                uptr_exp = make_unique<JumpIfFalseExpression>(m_context, maskedCommand.modes);
+                uptr_exp->process();
+            }
+            else if (commandString == "7" || commandString == "07"){
+                uptr_exp = make_unique<LessThanExpression>(m_context, maskedCommand.modes);
+                uptr_exp->process();
+            }
+            else if (commandString == "8" || commandString == "08"){
+                uptr_exp = make_unique<EqualsExpression>(m_context, maskedCommand.modes);
+                uptr_exp->process();
             }
 
         }

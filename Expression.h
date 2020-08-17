@@ -12,7 +12,7 @@ using namespace std;
 class Expression {
 public:
     explicit Expression(Context &input);
-    virtual int Calculate();
+    virtual int process();
     virtual void writeData(int inValue);
     virtual int readData();
     virtual ~Expression();
@@ -24,9 +24,25 @@ protected:
     Context &m_input;
 };
 
-class BinaryExpression : public Expression{
+class OneParamExpression : public Expression{
 public:
-    BinaryExpression(Context &input, std::vector<string> mask);
+    OneParamExpression(Context &input, std::vector<string> mask);
+protected:
+    int m_expressionPos;
+};
+
+class TwoParamsExpression : public Expression{
+public:
+    TwoParamsExpression(Context &input, std::vector<string> mask);
+
+protected:
+    int m_inPos;
+    int m_outPos;
+};
+
+class ThreeParamsExpression : public Expression{
+public:
+    ThreeParamsExpression(Context &input, std::vector<string> mask);
 
 protected:
     int m_lhsPos;
@@ -37,37 +53,56 @@ protected:
 /**
  *
  */
-class AddExpression : public BinaryExpression{
+class AddExpression : public ThreeParamsExpression{
 public:
     AddExpression(Context &input, std::vector<string> mask);
-    int Calculate() override;
+    int process() override;
 };
 
 /**
  *
  */
-class MultiplyExpression : public BinaryExpression{
+class MultiplyExpression : public ThreeParamsExpression{
 public:
     MultiplyExpression(Context &input, std::vector<string> mask);
-    int Calculate() override;
+    int process() override;
 
 };
 
-class UnaryExpression : public Expression{
-public:
-    UnaryExpression(Context &input, std::vector<string> mask);
-protected:
-    int m_expressionPos;
-};
 
-class InputExpression : public UnaryExpression{
+
+class InputExpression : public OneParamExpression{
 public:
     InputExpression(Context &input, std::vector<string> mask);
-    void writeData(int inValue);
+    void writeData(int inValue) override;
 };
 
-class OutputExpression : public UnaryExpression{
+class OutputExpression : public OneParamExpression{
 public:
     OutputExpression(Context &input, std::vector<string> mask);
-    int readData();
+    int readData() override;
+};
+
+class JumpIfTrueExpression : public TwoParamsExpression{
+public:
+    JumpIfTrueExpression(Context &input, std::vector<string> mask);
+    int process() override;
+};
+
+class JumpIfFalseExpression : public TwoParamsExpression{
+public:
+    JumpIfFalseExpression(Context &input, std::vector<string> mask);
+    int process() override;
+};
+
+class LessThanExpression : public ThreeParamsExpression{
+public:
+    LessThanExpression(Context &input, std::vector<string> mask);
+    int process() override;
+};
+
+class EqualsExpression : public ThreeParamsExpression{
+public:
+    EqualsExpression(Context &input, std::vector<string> mask);
+    int process() override;
 };

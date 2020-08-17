@@ -9,7 +9,7 @@ Expression::Expression(Context &input)
 
 Expression::~Expression() noexcept {}
 
-int Expression::Calculate() {
+int Expression::process() {
     return 0;
 }
 
@@ -21,7 +21,28 @@ int Expression::readData() {
     return 0;
 }
 
-BinaryExpression::BinaryExpression(Context &input, std::vector<string> mask)
+int Expression::getMaskedPos(int relativePos, std::vector<string> mask)
+{
+    if (mask.at(relativePos) == "0")
+        return m_input.getValue(m_pos + (relativePos + 1));
+    else
+        return m_pos + (relativePos + 1);
+}
+
+OneParamExpression::OneParamExpression(Context &input, std::vector<string> mask)
+        : Expression(input)
+{
+    m_expressionPos = getMaskedPos(0, mask);
+}
+
+TwoParamsExpression::TwoParamsExpression(Context &input, std::vector<string> mask)
+    : Expression(input)
+    {
+        m_inPos = getMaskedPos(0, mask);
+        m_outPos = getMaskedPos(1, mask);
+    }
+
+ThreeParamsExpression::ThreeParamsExpression(Context &input, std::vector<string> mask)
     : Expression(input)
     {
         m_lhsPos = getMaskedPos(0, mask);
@@ -30,57 +51,105 @@ BinaryExpression::BinaryExpression(Context &input, std::vector<string> mask)
     }
 
 AddExpression::AddExpression(Context &input, std::vector<string> mask)
-    : BinaryExpression(input, mask)
+    : ThreeParamsExpression(input, mask)
     {}
 
 
-int AddExpression::Calculate() {
+int AddExpression::process() {
     int lhs = m_input.getValue(m_lhsPos);
     int rhs = m_input.getValue(m_rhsPos);
     m_input.setValue(lhs + rhs, m_outPos);
     m_input.setPos(m_pos + 4);
+    m_pos = m_input.getPos();
 }
 
 MultiplyExpression::MultiplyExpression(Context &input, std::vector<string> mask)
-    : BinaryExpression(input, mask)
+    : ThreeParamsExpression(input, mask)
     {}
 
 
-int MultiplyExpression::Calculate() {
+int MultiplyExpression::process() {
     int lhs = m_input.getValue(m_lhsPos);
     int rhs = m_input.getValue(m_rhsPos);
     m_input.setValue(lhs * rhs, m_outPos);
     m_input.setPos(m_pos + 4);
+    m_pos = m_input.getPos();
 }
 
-UnaryExpression::UnaryExpression(Context &input, std::vector<string> mask)
-    : Expression(input)
-    {
-        m_expressionPos = getMaskedPos(0, mask);
-    }
-
 InputExpression::InputExpression(Context &input, std::vector<string> mask)
-    : UnaryExpression(input, mask)
+    : OneParamExpression(input, mask)
     {}
 
 void InputExpression::writeData(int inValue) {
     m_input.setValue(inValue, m_expressionPos);
     m_input.setPos(m_pos + 2);
+    m_pos = m_input.getPos();
 }
 
 OutputExpression::OutputExpression(Context &input, std::vector<string> mask)
-    : UnaryExpression(input, mask)
+    : OneParamExpression(input, mask)
     {}
 
 int OutputExpression::readData() {
     m_input.setPos(m_pos + 2);
+    m_pos = m_input.getPos();
     return m_input.getValue(m_expressionPos);
 }
 
-int Expression::getMaskedPos(int relativePos, std::vector<string> mask)
-{
-    if (mask.at(relativePos) == "0")
-        return m_input.getValue(m_pos + (relativePos + 1));
+JumpIfTrueExpression::JumpIfTrueExpression(Context &input, std::vector<string> mask)
+    : TwoParamsExpression(input, mask)
+    {}
+
+int JumpIfTrueExpression::process() {
+    if (m_input.getValue(m_inPos) != 0)
+    {
+        m_input.setPos(m_input.getValue(m_outPos));
+        m_pos = m_input.getPos();
+    }
+    else {
+        m_input.setPos(m_pos + 3);
+        m_pos = m_input.getPos();
+    }
+}
+
+JumpIfFalseExpression::JumpIfFalseExpression(Context &input, std::vector<string> mask)
+        : TwoParamsExpression(input, mask)
+    {}
+
+int JumpIfFalseExpression::process() {
+    if (m_input.getValue(m_inPos) == 0)
+    {
+        m_input.setPos(m_input.getValue(m_outPos));
+        m_pos = m_input.getPos();
+    }
+    else {
+        m_input.setPos(m_pos + 3);
+        m_pos = m_input.getPos();
+    }
+}
+
+LessThanExpression::LessThanExpression(Context &input, std::vector<string> mask)
+    : ThreeParamsExpression(input, mask)
+    {}
+
+int LessThanExpression::process() {
+    if (m_input.getValue(m_lhsPos) < m_input.getValue(m_rhsPos))
+        m_input.setValue(1, m_outPos);
     else
-        return m_pos + (relativePos + 1);
+        m_input.setValue(0, m_outPos);
+    m_input.setPos(m_pos + 4);
+    m_pos = m_input.getPos();
+}
+
+EqualsExpression::EqualsExpression(Context &input, std::vector<string> mask)
+    : ThreeParamsExpression(input, mask)
+    {}
+
+int EqualsExpression::process() {
+    if (m_input.getValue(m_lhsPos) == m_input.getValue(m_rhsPos))
+        m_input.setValue(1, m_outPos);
+    else
+        m_input.setValue(0, m_outPos);
+    m_input.setPos(m_pos + 4);
+    m_pos = m_input.getPos();
 }
