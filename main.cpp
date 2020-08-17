@@ -21,7 +21,7 @@ int main()
             parser.parse();
             std::cout << parser.getValue(0) << endl;
         }
-
+        // Part 2
         {
             for (int noun = 0; noun < 100; noun++)
                 for (int verb = 0; verb < 100; verb++) {
@@ -87,7 +87,7 @@ int main()
             Parser parser = Parser(inputCode);
             std::optional<int> a = parser.parse(1);
         }
-
+        // Part 2
         {
             //std::vector<int> inputCode = {3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99};
             Parser parser = Parser(inputCode);
@@ -96,7 +96,7 @@ int main()
     }
     // Day 7
     {
-
+        
         {
             std::vector<int> thrusterCodes {0,1,2,3,4};
             std::vector<std::vector<int>> permutedCodes;
