@@ -6,12 +6,20 @@
 #include "Expression.h"
 #include "optional"
 
+/** Parser for intCode computer.
+ * Makes a copy of the input intCode and stores for processing.
+ */
 class Parser{
 public:
-    Parser(std::vector<int> opCode)
-        : m_context(Context(opCode, 0))
+    explicit Parser(std::vector<int> intCode)
+        : m_context(Context(intCode, 0))
     {}
 
+/** Parses the intCode
+ * Accepts an input value and returns the last output (if any).
+ * @param input: input for the computer.
+ * @return: output of the computer.
+ */
     std::optional<int> parse( int input = std::numeric_limits<int>::max())
     {
         int pos = 0;
@@ -69,7 +77,10 @@ public:
             retval = input;
         return retval;
     }
-
+/** Returns the value stored at the requested position of the intCode input.
+ * @param pos: position to be checked.
+ * @return: the velaue at the position.
+ */
     int getValue(int pos)
     {
         return m_context.getValue(pos);

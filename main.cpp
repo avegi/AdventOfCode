@@ -1,11 +1,13 @@
 #include <iostream>
 #include "vector"
 #include "Parser.h"
+#include "algorithm"
 
-int main() {
+int main()
+{
 
 
-    // Part 1
+    // Day 1
     {
         std::vector<int> inputCode = {1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 6, 19, 1, 19, 6, 23, 2, 23,
                                       6, 27, 2, 6, 27, 31, 2, 13, 31, 35, 1, 9, 35, 39, 2, 10, 39, 43, 1, 6, 43, 47, 1,
@@ -92,5 +94,31 @@ int main() {
             std::optional<int> a = parser.parse(5);
         }
     }
+    // Day 7
+    {
+
+        {
+            std::vector<int> thrusterCodes {0,1,2,3,4};
+            std::vector<std::vector<int>> permutedCodes;
+
+            while (std::next_permutation(thrusterCodes.begin(), thrusterCodes.end()))
+            {
+                permutedCodes.emplace_back(thrusterCodes);
+            }
+
+
+        }
+    }
+
+
+
+
+
+
+
+
+
     return 0;
 }
+
+
