@@ -96,7 +96,7 @@ int main()
     }
     // Day 7
     {
-        
+
         {
             std::vector<int> thrusterCodes {0,1,2,3,4};
             std::vector<std::vector<int>> permutedCodes;
